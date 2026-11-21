@@ -782,7 +782,7 @@ export function cloneMutableTextInstance(
 
 let currentPopstateTransitionEvent: Event | null = null;
 export function shouldAttemptEagerTransition(): boolean {
-  const event = window.event;
+  const event = typeof window !== 'undefined' ? window.event : undefined;
   if (event && event.type === 'popstate') {
     // This is a popstate event. Attempt to render any transition during this
     // event synchronously. Unless we already attempted during this event.
@@ -807,16 +807,16 @@ export function shouldAttemptEagerTransition(): boolean {
 
 let schedulerEvent: void | Event = undefined;
 export function trackSchedulerEvent(): void {
-  schedulerEvent = window.event;
+  schedulerEvent = typeof window !== 'undefined' ? window.event : undefined;
 }
 
 export function resolveEventType(): null | string {
-  const event = window.event;
+  const event = typeof window !== 'undefined' ? window.event : undefined;
   return event && event !== schedulerEvent ? event.type : null;
 }
 
 export function resolveEventTimeStamp(): number {
-  const event = window.event;
+  const event = typeof window !== 'undefined' ? window.event : undefined;
   return event && event !== schedulerEvent ? event.timeStamp : -1.1;
 }
 
