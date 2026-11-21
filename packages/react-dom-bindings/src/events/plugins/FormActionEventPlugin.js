@@ -42,6 +42,20 @@ function coerceFormActionProp(
   }
 }
 
+function constructFormData(
+  form: HTMLFormElement,
+  submitter: null | void | HTMLInputElement | HTMLButtonElement,
+): FormData {
+  if (submitter != null && submitter.form === form) {
+    return new FormData(form, submitter);
+  }
+  const formData = new FormData(form);
+  if (submitter != null && submitter.name) {
+    formData.append(submitter.name, submitter.value);
+  }
+  return formData;
+}
+
 /**
  * This plugin invokes action functions on forms, inputs and buttons if
  * the form doesn't prevent default.
@@ -103,7 +117,7 @@ function extractEvents(
       if (didCurrentEventScheduleTransition()) {
         // We're going to set the pending form status, but because the submission
         // was prevented, we should not fire the action function.
-        const formData = new FormData(form, submitter);
+        const formData = constructFormData(form, submitter);
         const pendingState: FormStatus = {
           pending: true,
           data: formData,
@@ -132,7 +146,7 @@ function extractEvents(
       event.preventDefault();
 
       // Dispatch the action and set a pending form status.
-      const formData = new FormData(form, submitter);
+      const formData = constructFormData(form, submitter);
       const pendingState: FormStatus = {
         pending: true,
         data: formData,
